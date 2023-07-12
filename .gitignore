@@ -1,0 +1,5 @@
+.idea/
+config.json
+database.db
+.DS_Store
+__pycache__/
