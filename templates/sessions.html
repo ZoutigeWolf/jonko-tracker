@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Sessions | Jonko Tracker</title>
+        <link rel="stylesheet" href="static/style.css">
+        <link rel="icon" type="image/png" href="static/joint.png">
+        <script src="static/src/sidebar.js"></script>
+        <script src="static/src/sessions.js"></script>
+        <script src="static/src/utils.js"></script>
+        <script defer src="https://kit.fontawesome.com/9cd64cc426.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div id="page-container">
+            <div id="sidebar">
+                <button class="sidebar-button" onclick="window.location.href = window.location.origin;">
+                    <i class="fa-solid fa-chart-line"></i>
+                    Overview
+                </button>
+                <button id="current-sidebar-button" class="sidebar-button" onclick="window.location.href = window.location.origin + `/sessions`;">
+                    <i class="fa-solid fa-list"></i>
+                    Sessions
+                </button>
+                <button class="sidebar-button" onclick="window.location.href = window.location.origin + `/locations`;">
+                    <i class="fa-solid fa-location-dot"></i>
+                    Locations
+                </button>
+                <button class="sidebar-button" onclick="window.location.href = window.location.origin + `/map`;">
+                    <i class="fa-solid fa-map"></i>
+                    Map
+                </button>
+                <button class="sidebar-button" onclick="window.location.href = window.location.origin + `/new-session`;">
+                    <i class="fa-solid fa-plus"></i>
+                    New session
+                </button>
+                <button class="sidebar-button" onclick="window.location.href = window.location.origin + `/logout`;">
+                    <i class="fa-solid fa-user"></i>
+                    {{ current_user.username }}
+                </button>
+            </div>
+            <div>
+                <div id="session-list">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
