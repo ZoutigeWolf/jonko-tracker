@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 
 from database import config
@@ -6,6 +6,8 @@ from database import config
 from models.user import User
 from models.session import Session
 from models.location import Location
+
+from statistics import Statistics
 
 app = Flask(__name__)
 app.secret_key = config["secret_key"]
@@ -201,10 +203,17 @@ def api_locations_delete(id: str):
     return "Deleted location successfully", 200
 
 
-@app.get("/api/statistics/<user_id>")
+@app.get("/api/statistics")
 @login_required
-def api_statistics_get(user_id: str):
-    pass
+def api_statistics_get():
+    user = User.get_user_by_id(current_user.id)
+
+    if not user:
+        return f"User with id {current_user.id} not found", 404
+
+    stats = Statistics(user)
+
+    return jsonify(stats.get_data()), 200
 
 
 if __name__ == '__main__':

@@ -35,4 +35,4 @@ class Session:
         return max([s.id for s in Session.get_all_sessions()], default=0) + 1
 
 
-from location import Location
+from models.location import Location

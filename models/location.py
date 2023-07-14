@@ -1,4 +1,5 @@
-from datetime import datetime
+import requests
+
 from database import database
 
 
@@ -56,4 +57,4 @@ class Location:
         return max([s.id for s in Location.get_all_locations()], default=0) + 1
 
 
-from session import Session
+from models.session import Session

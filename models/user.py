@@ -64,5 +64,5 @@ class User:
         return max([u.id for u in User.get_all_users()], default=0) + 1
 
 
-from session import Session
-from location import Location
+from models.session import Session
+from models.location import Location
