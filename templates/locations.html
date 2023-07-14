@@ -7,6 +7,8 @@
         <link rel="icon" type="image/png" href="static/joint.png">
         <script src="static/src/sidebar.js"></script>
         <script src="static/src/locations.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script defer src="https://kit.fontawesome.com/9cd64cc426.js" crossorigin="anonymous"></script>
     </head>
     <body>
@@ -28,27 +30,30 @@
                     <i class="fa-solid fa-map"></i>
                     Map
                 </button>
-                <button class="sidebar-button" onclick="window.location.href = window.location.origin + `/new-session`;">
-                    <i class="fa-solid fa-plus"></i>
-                    New session
-                </button>
                 <button class="sidebar-button" onclick="window.location.href = window.location.origin + `/logout`;">
                     <i class="fa-solid fa-user"></i>
                     {{ current_user.username }}
                 </button>
             </div>
             <div id="locations-page-content">
+                <div id="locations-header">
+                    <button id="new-location-button" class="primary-button"><i class="fa-solid fa-plus"></i>New location</button>
+                </div>
                 <div id="locations-list">
                 </div>
                 <div id="locations-sidebar">
                     <label for="editor-name-input">Name</label>
                     <input id="editor-name-input">
-                    <div>
+                    <div class="locations-sidebar-row">
                         <label for="editor-latitude-input">Latitude</label>
                         <input id="editor-latitude-input">
                         <label for="editor-longitude-input">Longitude</label>
                         <input id="editor-longitude-input">
                     </div>
+                    <div id="editor-map"></div>
+                    <button id="editor-delete-button" class="delete-button">
+                        Delete location
+                    </button>
                 </div>
             </div>
         </div>

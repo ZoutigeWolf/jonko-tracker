@@ -54,11 +54,6 @@ def map_view():
     return render_template("map.html")
 
 
-@app.get("/new-session")
-@login_required
-def new_session_view():
-    return render_template("new-session.html")
-
 @app.get("/login")
 def login_view():
     if current_user.is_authenticated:
@@ -138,7 +133,12 @@ def api_sessions_post():
 @app.get("/api/locations/")
 @login_required
 def api_locations_get():
-    return jsonify([l.__dict__ for l in Location.get_all_locations() if l.user_id == current_user.id])
+    return jsonify(
+        sorted(
+            [l.__dict__ for l in Location.get_all_locations() if l.user_id == current_user.id],
+            key=lambda x: x["id"]
+        )
+    )
 
 
 @app.get("/api/locations/<id>")
@@ -153,9 +153,58 @@ def api_locations_get_id(id: str):
 def api_locations_post():
     data = request.json
 
-    Location.create_location(data["name"], data["latitude"], data["longitude"], current_user.id)
+    name = data.get("name")
+    latitude = data.get("latitude")
+    longitude = data.get("longitude")
 
-    return "Location created successfully", 201
+    if any([
+        name is None,
+        latitude is None,
+        longitude is None
+    ]):
+        return "Missing data", 400
+
+    location = Location.create_location(data["name"], data["latitude"], data["longitude"], current_user.id)
+
+    return jsonify(location.__dict__), 201
+
+
+@app.put("/api/locations/<id>")
+@login_required
+def api_locations_put(id: str):
+    location = Location.get_location_by_id(int(id))
+
+    if not Location:
+        return f"Location with id {id} not found", 404
+
+    data = request.json
+
+    location.update(
+        data.get("name"),
+        data.get("latitude"),
+        data.get("longitude")
+    )
+
+    return "Updated location successfully", 200
+
+
+@app.delete("/api/locations/<id>")
+@login_required
+def api_locations_delete(id: str):
+    location = Location.get_location_by_id(int(id))
+
+    if not Location:
+        return f"Location with id {id} not found", 404
+
+    location.delete()
+
+    return "Deleted location successfully", 200
+
+
+@app.get("/api/statistics/<user_id>")
+@login_required
+def api_statistics_get(user_id: str):
+    pass
 
 
 if __name__ == '__main__':

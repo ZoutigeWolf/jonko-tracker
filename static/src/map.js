@@ -17,11 +17,14 @@ function loadMap() {
     L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en',{
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3'],
-        attribution: '&copy; <a href="https://maps.google.com">Google Maps</a>'
+        attribution: '&copy; <a href="https://maps.google.com">Google Maps</a>',
+        crossOrigin: true
     }).addTo(map);
 
-    navigator.geolocation.getCurrentPosition(position => {
-        map.flyTo(new L.LatLng(position.coords.latitude, position.coords.longitude), 6);
+    navigator.geolocation.getCurrentPosition(
+        position => map.flyTo(new L.LatLng(position.coords.latitude, position.coords.longitude), 6),
+        null, {
+            enableHighAccuracy: true
     });
 }
 

@@ -26,6 +26,12 @@ class User:
     def get_id(self):
         return self.id
 
+    def get_sessions(self) -> list["Session"]:
+        return [s for s in Session.get_all_sessions() if s.user_id == self.id]
+
+    def get_locations(self) -> list["Location"]:
+        return [l for l in Location.get_all_locations() if l.user_id == self.id]
+
     @staticmethod
     def create_user(username: str, password: str) -> "User":
         user = User(User.get_next_id(), username, bcrypt.hashpw(password.encode(), bcrypt.gensalt()))
@@ -47,7 +53,6 @@ class User:
 
         return None if len(res) == 0 else res[0]
 
-
     @staticmethod
     def get_user_by_username(username: str) -> "User":
         res = [u for u in User.get_all_users() if u.username == username]
@@ -57,3 +62,7 @@ class User:
     @staticmethod
     def get_next_id() -> int:
         return max([u.id for u in User.get_all_users()], default=0) + 1
+
+
+from session import Session
+from location import Location

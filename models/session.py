@@ -33,3 +33,6 @@ class Session:
     @staticmethod
     def get_next_id() -> int:
         return max([s.id for s in Session.get_all_sessions()], default=0) + 1
+
+
+from location import Location
