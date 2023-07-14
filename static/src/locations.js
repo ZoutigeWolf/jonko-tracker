@@ -8,6 +8,8 @@ let isLoading = false;
 window.onload = () => {
     highlightSelectedSidebarButton();
     loadLocations();
+    initEditingEvents();
+    loadMap();
 
     let searchParams = new URLSearchParams(window.location.search);
     let locationId = searchParams.get("id");
@@ -15,20 +17,6 @@ window.onload = () => {
     if (locationId !== null) {
         editLocation(locationId);
     }
-
-    initEditingEvents();
-    loadMap();
-
-    document.getElementById("locations-list")
-        .addEventListener("click", () => toggleSidebar(false));
-
-    document.getElementById("new-location-button")
-        .addEventListener("click", () =>
-            navigator.geolocation.getCurrentPosition(
-                position => createNewLocation(position.coords.latitude, position.coords.longitude),
-                () => createNewLocation(0, 0), {
-                    enableHighAccuracy: true
-                }));
 }
 
 function loadMap() {
@@ -85,7 +73,22 @@ function initEditingEvents() {
 
     [nameInput, latInput, lngInput].forEach(e => e.addEventListener("change", submitLocationEdit));
 
-    document.getElementById("editor-delete-button").addEventListener("click", submitLocationDeletion);
+    document.getElementById("editor-delete-button").addEventListener("click", () => {
+        if (confirm("Are you sure you want to delete this location?")) {
+            submitLocationDeletion();
+        }
+    });
+
+    document.getElementById("locations-list")
+        .addEventListener("click", () => toggleSidebar(false));
+
+    document.getElementById("new-location-button")
+        .addEventListener("click", () =>
+            navigator.geolocation.getCurrentPosition(
+                position => createNewLocation(position.coords.latitude, position.coords.longitude),
+                () => createNewLocation(0, 0), {
+                    enableHighAccuracy: true
+                }));
 }
 
 function submitLocationEdit() {
@@ -129,29 +132,27 @@ function loadLocations() {
         .then(response => response.json())
         .then(locations => {
             locations.forEach(l => {
-                getGeoInfo(l.latitude, l.longitude).then(geoData => {
-                    let el = createElementFromHTML(createItem(l, geoData));
-                    el.addEventListener("click", (e) => {
-                        if (currentEditingId === el.dataset.locationid) {
-                            toggleSidebar(false);
-                            return;
-                        }
+                let el = createElementFromHTML(createItem(l));
+                el.addEventListener("click", (e) => {
+                    if (currentEditingId === el.dataset.locationid) {
+                        toggleSidebar(false);
+                        return;
+                    }
 
-                        e.stopPropagation();
-                        editLocation(el.dataset.locationid);
-                    });
-
-                    locationsList.appendChild(el);
+                    e.stopPropagation();
+                    editLocation(el.dataset.locationid);
                 });
+
+                locationsList.appendChild(el);
             })
 
             isLoading = false;
         });
 
-    const createItem = (location, geoData) => `
+    const createItem = (location) => `
         <div id="locations-item" class="locations-item-row" data-locationid="${location.id}">
             <p id="location-item-name">${location.name}</p>
-            <p id="location-item-geo">${geoData.city}, ${geoData.country}</p>
+            <p id="location-item-geo">${location.geo_data}</p>
         </div>`;
 }
 
@@ -193,21 +194,6 @@ function toggleSidebar(show) {
     }
 
     map.invalidateSize(false);
-}
-
-async function getGeoInfo(lat, lng) {
-    let response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`);
-
-    if (response.status !== 200){
-        return null;
-    }
-
-    let data = await response.json();
-
-    return {
-        city: data.city,
-        country: data.countryName
-    };
 }
 
 function createElementFromHTML(htmlString) {

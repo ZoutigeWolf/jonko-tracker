@@ -9,7 +9,7 @@
 
 body {
     margin: 0;
-    background: #ffffff;
+    background: #212121;
 }
 
 p {
@@ -17,8 +17,8 @@ p {
 }
 
 #separator {
-    height: 2px;
-    background-color: #000000;
+    height: 1px;
+    background-color: #616161;
     border-radius: 2px;
 }
 
@@ -33,7 +33,7 @@ p {
     align-items: stretch;
     gap: 8px;
     height: calc(100vh - 8px);
-    background-color: #050203;
+    background-color: #252525;
     padding: 4px;
 }
 
@@ -48,6 +48,7 @@ p {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    color: #ffffff;
 }
 
 #session-item {
@@ -149,7 +150,7 @@ button:hover {
 }
 
 .sidebar-button:hover {
-    background-color: #499b4a;
+    background-color: #59b659;
 }
 
 .sidebar-button:nth-last-child(1) {
@@ -260,10 +261,11 @@ button:hover {
     flex-direction: column;
     align-items: center;
     max-width: 500px;
-    max-height: 500px;
-    border: 1px solid #000000;
+    max-height: 75px;
+    border: 1px solid #616161;
     border-radius: 4px;
-    background-color: #ffffff;
+    background-color: #424242;
+    color: #ffffff;
     padding: 16px;
 }
 
