@@ -4,7 +4,7 @@ window.onload = () => {
     })
 
     document.getElementById("login-button").addEventListener("click",() => {
-        let username = document.getElementById("username-input").value;
+        let email = document.getElementById("email-input").value;
         let password = document.getElementById("password-input").value;
         let remember = document.getElementById("remember-input").value;
 
@@ -14,7 +14,7 @@ window.onload = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                username: username,
+                email: email,
                 password: password,
                 remember: remember
             })

@@ -2,11 +2,11 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Locations | Jonko Tracker</title>
+        <title>Location | Jonko Tracker</title>
         <link rel="stylesheet" href="static/style.css">
         <link rel="icon" type="image/png" href="static/joint.png">
         <script src="static/src/sidebar.js"></script>
-        <script src="static/src/locations.js"></script>
+        <script src="static/src/location.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script defer src="https://kit.fontawesome.com/9cd64cc426.js" crossorigin="anonymous"></script>
@@ -22,7 +22,7 @@
                     <i class="fa-solid fa-list"></i>
                     Sessions
                 </button>
-                <button id="current-sidebar-button" class="sidebar-button" onclick="window.location.href = window.location.origin + `/locations`;">
+                <button class="sidebar-button" onclick="window.location.href = window.location.origin + `/locations`;">
                     <i class="fa-solid fa-location-dot"></i>
                     Locations
                 </button>
@@ -35,13 +35,10 @@
                     {{ current_user.username }}
                 </button>
             </div>
-            <div id="locations-page-content">
-                <div id="locations-header">
-                    <button id="new-location-button" class="primary-button"><i class="fa-solid fa-plus"></i>New location</button>
-                </div>
-                <div id="locations-list">
-
-                </div>
+            <div id="location-page-content">
+                <img id="location-image">
+                <p id="location-name"></p>
+                <p id="location-geo"></p>
             </div>
         </div>
     </body>

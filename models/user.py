@@ -1,12 +1,14 @@
-from database import database
 import bcrypt
+
+from database import database
 
 
 class User:
-    def __init__(self, id: int, username: str, password_hash: bytes) -> None:
+    def __init__(self, id: int, username: str, password_hash: bytes, email: str) -> None:
         self.id = id
         self.username = username
         self.password_hash = password_hash
+        self.email = email
 
     @property
     def is_active(self):
@@ -32,11 +34,31 @@ class User:
     def get_locations(self) -> list["Location"]:
         return [l for l in Location.get_all_locations() if l.user_id == self.id]
 
-    @staticmethod
-    def create_user(username: str, password: str) -> "User":
-        user = User(User.get_next_id(), username, bcrypt.hashpw(password.encode(), bcrypt.gensalt()))
+    def update(self, username: str = None, password: str = None, email: str = None) -> None:
+        if username is not None:
+            self.username = username
+
+        if password is not None:
+            self.password_hash = User.hash_password(password)
+
+        if email is not None:
+            self.email = email
+
         database.execute(
-            "INSERT INTO users (id, username, password_hash) VALUES(?, ?, ?)",
+            "UPDATE users SET username = ?, password_hash = ?, email = ? WHERE id = ?",
+            (self.username, self.password_hash, self.email, self.id)
+        )
+        database.commit()
+
+    @staticmethod
+    def hash_password(password: str) -> bytes:
+        return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+
+    @staticmethod
+    def create_user(username: str, password: str, email: str) -> "User":
+        user = User(User.get_next_id(), username, User.hash_password(password), email)
+        database.execute(
+            "INSERT INTO users (id, username, password_hash, email) VALUES(?, ?, ?, ?)",
             tuple(user.__dict__.values())
         )
         database.commit()
@@ -54,8 +76,8 @@ class User:
         return None if len(res) == 0 else res[0]
 
     @staticmethod
-    def get_user_by_username(username: str) -> "User":
-        res = [u for u in User.get_all_users() if u.username == username]
+    def get_user_by_email(email: str) -> "User":
+        res = [u for u in User.get_all_users() if u.email == email]
 
         return None if len(res) == 0 else res[0]
 

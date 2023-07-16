@@ -34,6 +34,6 @@ function loadLocations() {
         .then(locations => {
             locations.forEach(l => L.marker([l.latitude, l.longitude], {
                 title: l.name,
-            }).addTo(map).bindPopup(`${l.name}<br><button onclick="window.location.href = window.location.origin + '/locations?id=${l.id}'">Edit</button>`));
+            }).addTo(map).bindPopup(`${l.name}<br><button onclick="window.location.href = window.location.origin + '/locations?id=${l.id}'">View</button>`));
         });
 }
