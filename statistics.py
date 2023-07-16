@@ -29,4 +29,4 @@ class Statistics:
 
         max_count = max(count.values())
 
-        return [Location.get_location_by_id(i) for i, c in count.items() if c == max_count]
+        return [Location.get_by("id", i) for i, c in count.items() if c == max_count]

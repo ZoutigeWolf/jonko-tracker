@@ -5,6 +5,7 @@ window.onload = () => {
 
     document.getElementById("register-button").addEventListener("click",() => {
         let username = document.getElementById("username-input").value;
+        let email = document.getElementById("email-input").value;
         let password = document.getElementById("password-input").value;
         let passwordControl = document.getElementById("password-control-input").value;
 
@@ -23,6 +24,7 @@ window.onload = () => {
             },
             body: JSON.stringify({
                 username: username,
+                email: email,
                 password: password,
             })
         }).then(response => {
