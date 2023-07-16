@@ -1,7 +1,13 @@
 import smtplib
 from email.message import EmailMessage
+from threading import Thread
 
 from database import config
+
+
+def send_mail_async(recipient: str, subject: str, content: str) -> None:
+    t = Thread(target=send_mail, args=(recipient, subject, content))
+    t.start()
 
 
 def send_mail(recipient: str, subject: str, content: str) -> None:

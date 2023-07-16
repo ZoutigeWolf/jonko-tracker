@@ -13,7 +13,7 @@ from models.session import Session
 from models.location import Location
 
 from statistics import Statistics
-from mail import send_mail
+from mail import send_mail_async
 
 app = Flask(__name__)
 app.secret_key = config["secret_key"]
@@ -153,7 +153,7 @@ def forgot_password_post():
 
     session = PasswordResetSession.create_session(user.id)
 
-    send_mail(
+    send_mail_async(
         user.email,
         "Password reset",
         f"""
