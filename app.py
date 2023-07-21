@@ -1,3 +1,4 @@
+import base64
 import io
 from datetime import datetime
 
@@ -5,7 +6,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_minify import Minify
 
-from database import config
+from database import config, database
 
 from models.user import User
 from models.password_reset_session import PasswordResetSession
@@ -31,6 +32,9 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
+    if request.path.startswith("/api/"):
+        return "Unauthenticated", 401
+
     return redirect(url_for("login_view"))
 
 
@@ -58,7 +62,12 @@ def locations_view():
     id = request.args.get("id")
 
     if id is not None:
-        return render_template("location.html")
+        location = Location.get_by("id", int(id))
+
+        if not location:
+            return "Location not found", 404
+
+        return render_template("location.html", location=location)
 
     return render_template("locations.html")
 
@@ -81,12 +90,23 @@ def login_view():
 def login_post():
     data = request.json
 
-    user = User.get_by("email", data["email"])
+    email = data.get("email")
+    password = data.get("password")
+    remember = data.get("remember")
 
-    if not user or not user.check_pass(data["password"]):
+    if any([
+        email is None,
+        password is None,
+        remember is None
+    ]):
+        return "Missing data", 400
+
+    user = User.get_by("email", email)
+
+    if not user or not user.check_pass(password):
         return "Incorrect email or password", 401
 
-    login_user(user, data["remember"])
+    login_user(user, remember)
 
     return "Logged in successfully", 200
 
@@ -203,6 +223,15 @@ def logout():
     return redirect(url_for("home_view"))
 
 
+@app.get("/api/current-user")
+@login_required
+def api_current_user_get():
+    data = current_user.as_dict()
+    del data["password_hash"]
+
+    return data, 200
+
+
 @app.get("/api/sessions")
 @login_required
 def api_sessions_get():
@@ -254,7 +283,7 @@ def api_locations_get_id_image(id: str):
 
     return send_file(
         io.BytesIO(location.cover_image) if location.cover_image else "static/placeholder.png",
-        "image/png",
+        "image/jpeg",
         download_name=f"location_{id}_{location.name.replace(' ', '_')}.png"
     )
 
@@ -290,13 +319,12 @@ def api_locations_put(id: str):
 
     data = request.json
 
-    location.update(
-        name=data.get("name"),
-        latitude=data.get("latitude"),
-        longitude=data.get("longitude")
-    )
+    if "cover_image" in data.keys():
+        data["cover_image"] = base64.b64decode(data["cover_image"].split(",")[1])
 
-    return "Updated location successfully", 200
+    location.update(**data)
+
+    return jsonify(location.as_dict()), 200
 
 
 @app.delete("/api/locations/<id>")

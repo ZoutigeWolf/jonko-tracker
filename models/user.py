@@ -8,7 +8,7 @@ from models.location import Location
 class User(Model):
     table = "users"
 
-    def __init__(self, id: int, username: str, password_hash: bytes, email: str) -> None:
+    def __init__(self, id: int, username: str, password_hash: str, email: str) -> None:
         super().__init__(id)
         self.username = username
         self.password_hash = password_hash
@@ -30,7 +30,7 @@ class User(Model):
         return self.id
 
     def check_pass(self, password: str) -> bool:
-        return bcrypt.checkpw(password.encode(), self.password_hash)
+        return bcrypt.checkpw(password.encode(), self.password_hash.encode())
 
     def get_sessions(self) -> list[Session]:
         return [s for s in Session.get_all() if s.user_id == self.id]

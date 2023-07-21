@@ -8,11 +8,11 @@ class Location(Model):
     table = "locations"
 
     def __init__(self, id: int, name: str, latitude: float, longitude: float, user_id: int, geo_data: Union[str, None],
-                 cover_image: Union[bytes, None]) -> None:
+                 cover_image: bytes) -> None:
         super().__init__(id)
         self.name = name
-        self.latitude = latitude
-        self.longitude = longitude
+        self.latitude = float(latitude)
+        self.longitude = float(longitude)
         self.user_id = user_id
         self.geo_data = geo_data if geo_data else self.fetch_geo_data()
         self.cover_image = cover_image

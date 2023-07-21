@@ -11,8 +11,9 @@ class Model:
     def __init__(self, id: int) -> None:
         self.id = id
 
-    def as_dict(self):
+    def as_dict(self) -> dict:
         d = self.__dict__
+
         for k, v in d.items():
             if isinstance(v, bytes):
                 d[k] = str(v)
@@ -26,12 +27,12 @@ class Model:
 
             setattr(self, k, v)
 
-        data = self.as_dict()
+        data = self.__dict__
 
         database.execute(
             f"""
             UPDATE {self.table}
-            SET {(', '.join([f'{k} = %s' for k in data.keys()]))}
+            SET {(', '.join([f'{k} = %s' for k in data.keys() if k != 'id']))}
             WHERE id = %s
             """,
             tuple(v for k, v in data.items() if k != "id") + (self.id,)
@@ -74,4 +75,4 @@ class Model:
         return max([x.id for x in cls.get_all()], default=0) + 1
 
     def __repr__(self) -> str:
-        return str(self.as_dict())
+        return str(self.__dict__)

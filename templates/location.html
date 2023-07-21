@@ -7,6 +7,7 @@
         <link rel="icon" type="image/png" href="static/joint.png">
         <script src="static/src/sidebar.js"></script>
         <script src="static/src/location.js"></script>
+        <script src="static/src/popup.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
         <script defer src="https://kit.fontawesome.com/9cd64cc426.js" crossorigin="anonymous"></script>
@@ -36,9 +37,38 @@
                 </button>
             </div>
             <div id="location-page-content">
-                <img id="location-image">
-                <p id="location-name"></p>
-                <p id="location-geo"></p>
+                <div id="location-image-container">
+                    <img id="location-image">
+                    <label for="image-input">
+                        <i class="fa-solid fa-pen"></i>
+                    </label>
+                    <input id="image-input" type="file">
+                </div>
+                <div id="location-header">
+                    <p id="location-name">{{ location.name }}</p>
+                    <p id="location-geo">{{ location.geo_data }}</p>
+                    <button id="location-edit-button" onclick="showLocationEditor()"><i class="fa-solid fa-pen"></i> Edit</button>
+                </div>
+                <div id="location-info">
+                    <div id="location-map"></div>
+                </div>
+            </div>
+        </div>
+        <div id="edit-location-popup-overlay" class="popup-overlay">
+            <div id="edit-location-popup" class="popup">
+                <button id="popup-close-button" onclick="closePopup('edit-location-popup')"><i class="fa-solid fa-xmark"></i></button>
+                <div class="edit-location-content">
+                    <label for="name-input">Name</label>
+                    <input id="name-input" type="text">
+                    <div class="edit-location-row">
+                        <label for="lat-input">Latitude</label>
+                        <input id="lat-input" type="number" step="0.000001" min="-90" max="90">
+                        <label for="lng-input">Longitude</label>
+                        <input id="lng-input" type="number" step="0.000001" min="-180" max="180">
+                    </div>
+                    <div id="location-edit-map"></div>
+                    <button onclick="submitEdit()">Submit</button>
+                </div>
             </div>
         </div>
     </body>
