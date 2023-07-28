@@ -16,8 +16,12 @@ from models.location import Location
 from statistics import Statistics
 from mail import send_mail_async
 
+from blueprints import api
+
 app = Flask(__name__)
 app.secret_key = config["secret_key"]
+
+app.register_blueprint(api.api)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
